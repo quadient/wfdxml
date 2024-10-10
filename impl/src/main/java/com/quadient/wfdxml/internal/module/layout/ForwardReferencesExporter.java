@@ -1,0 +1,61 @@
+package com.quadient.wfdxml.internal.module.layout;
+
+import com.quadient.wfdxml.internal.DefaultNodeType;
+import com.quadient.wfdxml.internal.NodeImpl;
+import com.quadient.wfdxml.internal.Tree;
+import com.quadient.wfdxml.internal.xml.export.XmlExporter;
+
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
+public class ForwardReferencesExporter {
+
+    private final LayoutImpl layout;
+    private final Map<DefaultNodeType, DefNode> defNodes;
+    private final XmlExporter exporter;
+
+    private Set<NodeImpl> rootDefNodes;
+
+
+    public ForwardReferencesExporter(LayoutImpl layout, Map<DefaultNodeType, DefNode> defNodes, XmlExporter exporter) {
+        this.layout = layout;
+        this.defNodes = defNodes;
+        this.exporter = exporter;
+        initRootDefNodes(defNodes);
+    }
+
+    private void initRootDefNodes(Map<DefaultNodeType, DefNode> defNodes) {
+        rootDefNodes = new HashSet<>();
+        for (DefNode defNode : defNodes.values()) {
+            rootDefNodes.add(defNode.node);
+        }
+    }
+
+    public void exportForwardReferences() {
+        exportTree(layout);
+    }
+
+    private void exportTree(Tree tree) {
+        for (Object c : tree.children) {
+            NodeImpl child = (NodeImpl) c;
+            if (!rootDefNodes.contains(child)) {
+                writeForwardReferenceToExporter(child, tree);
+            }
+            if (child instanceof Tree) {
+                exportTree((Tree) child);
+            }
+        }
+    }
+
+    private void writeForwardReferenceToExporter(NodeImpl node, Tree parent) {
+        exporter.beginElement(node.getXmlElementName())
+                .addElementWithIface("Id", node)
+                .addElementWithStringData("Name", node.getName())
+                .addElementWithStringData("Comment", node.getComment())
+                .addElementWithIface("ParentId", parent)
+                .addElement("Forward");
+
+        exporter.endElement();
+    }
+}
