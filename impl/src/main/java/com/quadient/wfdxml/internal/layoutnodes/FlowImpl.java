@@ -36,6 +36,7 @@ public class FlowImpl extends NodeImpl<Flow> implements Flow {
     private FlowContent flowContent = new FlowContent();
     private Flow defFlow;
     private boolean treatDefaultAsError = false;
+    private String location;
 
     public static String convertTypeToXmlName(Type type) {
         switch (type) {
@@ -159,6 +160,12 @@ public class FlowImpl extends NodeImpl<Flow> implements Flow {
         return this;
     }
 
+    @Override
+    public Flow setLocation(String location) {
+        this.location = location;
+        return this;
+    }
+
     public Flow getDefFlow() {
         return defFlow;
     }
@@ -178,14 +185,14 @@ public class FlowImpl extends NodeImpl<Flow> implements Flow {
         flowContent.export(exporter);
 
         switch (type) {
-            case SIMPLE:
+            case SIMPLE, REPEATED, CONDITION, INL_COND, VARIABLE_FORMATTED:
                 break;
-            case REPEATED:
-            case CONDITION:
-            case INL_COND:
+            case DIRECT_EXTERNAL: {
+                if (location == null || location.isBlank()) {
+                    throw new UnsupportedOperationException("DirectExternal Flow requires a location");
+                }
                 break;
-            case VARIABLE_FORMATTED:
-                break;
+            }
             default:
                 throw new UnsupportedOperationException("Unsupported Flow type '" + type + "'");
         }
@@ -209,7 +216,10 @@ public class FlowImpl extends NodeImpl<Flow> implements Flow {
 
                 exporter.addPCData(con.getFlow());
                 exporter.endElement();
+            }
 
+            if (type == DIRECT_EXTERNAL) {
+                exporter.addElementWithStringData("ExternalLocation", location);
             }
 
             exporter.addElementWithIface("Default", defFlow)

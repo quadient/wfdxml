@@ -22,6 +22,8 @@ public interface Flow extends Node<Flow> {
 
     Flow setDefaultError(boolean defaultError);
 
+    Flow setLocation(String location);
+
     enum Type {
         SIMPLE,
         SELECT_BY_INTEGER,
