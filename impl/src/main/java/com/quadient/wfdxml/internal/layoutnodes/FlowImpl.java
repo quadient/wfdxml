@@ -218,13 +218,12 @@ public class FlowImpl extends NodeImpl<Flow> implements Flow {
                 exporter.endElement();
             }
 
-            if (type == DIRECT_EXTERNAL) {
-                exporter.addElementWithStringData("ExternalLocation", location);
-            }
-
             exporter.addElementWithIface("Default", defFlow)
                     .addElementWithBoolData("TreatDefaultAsError", treatDefaultAsError);
+        }
 
+        if (type == DIRECT_EXTERNAL) {
+            exporter.addElementWithStringData("ExternalLocation", location);
         }
 
         exporter.addElementWithBoolData("SectionFlow", sectionFlow);
