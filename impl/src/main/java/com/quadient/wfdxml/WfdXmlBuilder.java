@@ -13,6 +13,7 @@ import com.quadient.wfdxml.internal.xml.export.XmlExporter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class WfdXmlBuilder {
     private final List<WorkFlowModuleImpl> modules = new ArrayList<>();
@@ -59,6 +60,17 @@ public class WfdXmlBuilder {
         }
 
         exporter.endElement();
+        return exporter.buildString();
+    }
+
+    public String buildLayoutDelta() {
+        XmlExporter exporter = new XmlExporter();
+
+        Optional<LayoutImpl> layoutModule = modules.stream().filter(LayoutImpl.class::isInstance).map(LayoutImpl.class::cast).findFirst();
+        if (layoutModule.isEmpty()) throw new IllegalStateException("No layout module found");
+
+        layoutModule.get().exportLayoutDelta(exporter);
+
         return exporter.buildString();
     }
 

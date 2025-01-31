@@ -7,6 +7,7 @@ public abstract class NodeImpl<S extends Node<S>> implements Node<S>, XmlExporta
 
     private String name;
     private String comment;
+    private String id;
 
     @Override
     public String getName() {
@@ -29,6 +30,18 @@ public abstract class NodeImpl<S extends Node<S>> implements Node<S>, XmlExporta
     @SuppressWarnings("unchecked")
     public S setComment(String comment) {
         this.comment = comment;
+        return (S) this;
+    }
+
+    @Override
+    public String getId() {
+        return id;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public S setId(String id) {
+        this.id = id;
         return (S) this;
     }
 

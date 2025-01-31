@@ -321,6 +321,21 @@ public class LayoutImpl extends WorkFlowModuleImpl<Layout> implements Layout {
         exporter.endElement();
     }
 
+    public void exportLayoutDelta(XmlExporter exporter) {
+        for (DefNode defNode : defNodes.values()) {
+            exporter.getIdRegister().setObjectId(defNode.node, defNode.xmlId);
+        }
+
+        exporter.beginElement("Layout");
+
+        children = children.stream().filter(child -> child.getName().equals("Flows")).toList();
+
+        new ForwardReferencesExporter(this, defNodes, exporter).exportForwardReferences();
+        exportNodes(exporter);
+
+        exporter.endElement();
+    }
+
     private void exportNodes(XmlExporter exporter) {
         exportTree(this, exporter);
     }
@@ -330,7 +345,11 @@ public class LayoutImpl extends WorkFlowModuleImpl<Layout> implements Layout {
             NodeImpl child = (NodeImpl) c;
             if (!(child instanceof Group)) {
                 exporter.beginElement(child.getXmlElementName());
-                exporter.addElementWithIface("Id", child);
+                if (child.getId() == null) {
+                    exporter.addElementWithIface("Id", child);
+                } else {
+                    exporter.addElementWithStringData("Id", child.getId());
+                }
                 child.export(exporter);
                 exporter.endElement();
             }

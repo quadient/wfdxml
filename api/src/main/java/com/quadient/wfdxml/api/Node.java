@@ -8,4 +8,8 @@ public interface Node<S extends Node<S>> {
     String getComment();
 
     S setComment(String comment);
+
+    String getId();
+
+    S setId(String id);
 }

@@ -39,7 +39,7 @@ public class ForwardReferencesExporter {
     private void exportTree(Tree tree) {
         for (Object c : tree.children) {
             NodeImpl child = (NodeImpl) c;
-            if (!rootDefNodes.contains(child)) {
+            if (!rootDefNodes.contains(child) && child.getId() == null) {
                 writeForwardReferenceToExporter(child, tree);
             }
             if (child instanceof Tree) {
