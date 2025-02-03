@@ -2,6 +2,7 @@ package com.quadient.wfdxml.internal.module
 
 import com.quadient.wfdxml.api.Node
 import com.quadient.wfdxml.api.layoutnodes.FillStyle
+import com.quadient.wfdxml.api.layoutnodes.Flow
 import com.quadient.wfdxml.api.layoutnodes.TextStyle
 import com.quadient.wfdxml.api.layoutnodes.tables.Cell
 import com.quadient.wfdxml.api.layoutnodes.tables.RowSet
@@ -112,5 +113,32 @@ class LayoutImplTest extends Specification {
 
         then:
         fillStyle.getColor().getName() == "Black"
+    }
+
+    def "exportLayoutDelta exports single layout tag containing only relevant nodes"() {
+        given:
+        Layout layout = new LayoutImpl()
+        layout.addPage().setName("ignoredPage")
+        layout.addFlow().setName("includedFlow").setType(Flow.Type.SIMPLE)
+
+        when:
+        layout.exportLayoutDelta(exporter)
+
+        then:
+        assertXmlFileEquals("com/quadient/wfdxml/workflow/SimpleDeltaLayout.xml", exporter.buildString())
+    }
+
+    def "nodes with custom id use it instead of generated id and are omitted from forward reference export"() {
+        given:
+        Layout layout = new LayoutImpl()
+        layout.addFlow().setName("flowWithGeneratedId1").setType(Flow.Type.SIMPLE)
+        layout.addFlow().setName("flowWithCustomId").setType(Flow.Type.SIMPLE).setId("CustomId")
+        layout.addFlow().setName("flowWithGeneratedId2").setType(Flow.Type.SIMPLE)
+
+        when:
+        layout.exportLayoutDelta(exporter)
+
+        then:
+        assertXmlFileEquals("com/quadient/wfdxml/workflow/SimpleDeltaLayoutWithCustomId.xml", exporter.buildString())
     }
 }
