@@ -6,6 +6,7 @@ import com.quadient.wfdxml.internal.xml.export.XmlExporter
 import spock.lang.Specification
 
 import static com.quadient.wfdxml.api.layoutnodes.Flow.Type
+import static com.quadient.wfdxml.api.layoutnodes.Flow.Type.DIRECT_EXTERNAL
 import static com.quadient.wfdxml.api.layoutnodes.Flow.Type.REPEATED
 import static com.quadient.wfdxml.api.layoutnodes.Flow.Type.SELECT_BY_CONDITION
 import static com.quadient.wfdxml.api.layoutnodes.Flow.Type.SELECT_BY_INLINE_CONDITION
@@ -262,5 +263,35 @@ class FlowImplTest extends Specification {
                              <Default></Default>
                              <TreatDefaultAsError>False</TreatDefaultAsError>
                              <SectionFlow>False</SectionFlow>""")
+    }
+
+    def "export direct external flow fails when location is not set"() {
+        given:
+        Flow flow = new FlowImpl()
+        flow.setType(DIRECT_EXTERNAL)
+
+        when:
+        flow.export(exporter)
+
+        then:
+        def exception = thrown(UnsupportedOperationException)
+        exception.message == "DirectExternal Flow requires a location"
+    }
+
+    def "export direct external flow with location"() {
+        given:
+        Flow flow = new FlowImpl()
+        flow.setType(DIRECT_EXTERNAL).setLocation("icm://somewhere/here.jld")
+
+        when:
+        flow.export(exporter)
+
+        then:
+        assertXmlEqualsWrapRoot(exporter.buildString(), """
+                             <Type>DirectExternal</Type>
+                             <FlowContent Width="0.2"/>
+                             <ExternalLocation>icm://somewhere/here.jld</ExternalLocation>
+                             <SectionFlow>False</SectionFlow>
+                             """)
     }
 }
