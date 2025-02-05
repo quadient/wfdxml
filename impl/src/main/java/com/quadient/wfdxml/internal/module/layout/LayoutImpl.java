@@ -33,6 +33,7 @@ import com.quadient.wfdxml.internal.module.WorkFlowModuleImpl;
 import com.quadient.wfdxml.internal.xml.export.XmlExporter;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static com.quadient.wfdxml.internal.DefaultNodeType.DN_ANCHORS_GROUP;
@@ -63,14 +64,13 @@ import static com.quadient.wfdxml.internal.DefaultNodeType.DN_TEXTSTYLE;
 import static com.quadient.wfdxml.internal.DefaultNodeType.DN_TEXTSTYLE_GROUP;
 
 public class LayoutImpl extends WorkFlowModuleImpl<Layout> implements Layout {
-
-
     private final Map<DefaultNodeType, DefNode> defNodes = new HashMap<>();
     private final Map<String, NodeImpl> defObject = new HashMap<>();
     private RootImpl root;
     private DataImpl data;
     private PagesImpl pages;
 
+    private final List<String> layoutDeltaAllowedGroups = List.of("Flows", "Tables", "RowSets", "Cells");
 
     public LayoutImpl() {
         initializeDefaultNodes();
@@ -328,7 +328,7 @@ public class LayoutImpl extends WorkFlowModuleImpl<Layout> implements Layout {
 
         exporter.beginElement("Layout");
 
-        children = children.stream().filter(child -> child.getName().equals("Flows")).toList();
+        children = children.stream().filter(child -> layoutDeltaAllowedGroups.contains(child.getName())).toList();
 
         new ForwardReferencesExporter(this, defNodes, exporter).exportForwardReferences();
         exportNodes(exporter);
