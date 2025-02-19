@@ -11,6 +11,8 @@ public interface Text {
 
     Text setTextStyle(TextStyle textStyle);
 
+    Text setExistingTextStyle(String id);
+
     Text appendText(String text);
 
     Text appendFlow(Flow flow);

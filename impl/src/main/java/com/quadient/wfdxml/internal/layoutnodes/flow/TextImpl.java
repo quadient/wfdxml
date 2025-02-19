@@ -20,6 +20,7 @@ public class TextImpl implements Text, XmlExportable {
     private final TabExportable tabExportable = new TabExportable();
     private final BrExportable brExportable = new BrExportable();
     private TextStyleImpl textStyle;
+    private String existingTextStyleId = null;
     private List<XmlExportable> content = new ArrayList<>();
 
     private ParagraphImpl parent;
@@ -34,6 +35,12 @@ public class TextImpl implements Text, XmlExportable {
     @Override
     public Text setTextStyle(TextStyle textStyle) {
         this.textStyle = (TextStyleImpl) textStyle;
+        return this;
+    }
+
+    @Override
+    public Text setExistingTextStyle(String id) {
+        this.existingTextStyleId = id;
         return this;
     }
 
@@ -93,8 +100,13 @@ public class TextImpl implements Text, XmlExportable {
     @Override
     public void export(XmlExporter exporter) {
         exporter.beginElement("T")
-                .addStringAttribute("xml:space", "preserve")
-                .addIfaceAttribute("Id", textStyle);
+                .addStringAttribute("xml:space", "preserve");
+
+        if (textStyle != null) {
+            exporter.addIfaceAttribute("Id", textStyle);
+        } else if (existingTextStyleId != null) {
+            exporter.addStringAttribute("Id", existingTextStyleId);
+        }
 
         for (XmlExportable o : content) {
             o.export(exporter);

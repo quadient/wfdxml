@@ -345,11 +345,7 @@ public class LayoutImpl extends WorkFlowModuleImpl<Layout> implements Layout {
             NodeImpl child = (NodeImpl) c;
             if (!(child instanceof Group)) {
                 exporter.beginElement(child.getXmlElementName());
-                if (child.getId() == null) {
-                    exporter.addElementWithIface("Id", child);
-                } else {
-                    exporter.addElementWithStringData("Id", child.getId());
-                }
+                exporter.addElementWithIface("Id", child);
                 child.export(exporter);
                 exporter.endElement();
             }

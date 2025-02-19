@@ -14,6 +14,7 @@ public class ParagraphImpl implements Paragraph, XmlExportable {
 
     private final List<TextImpl> texts = new ArrayList<>();
     private ParagraphStyleImpl paragraphStyle = null;
+    private String existingParagraphStyleId = null;
     private FlowImpl parent;
 
     public ParagraphImpl() {
@@ -34,6 +35,12 @@ public class ParagraphImpl implements Paragraph, XmlExportable {
     }
 
     @Override
+    public Paragraph setExistingParagraphStyle(String id) {
+        this.existingParagraphStyleId = id;
+        return this;
+    }
+
+    @Override
     public TextImpl addText() {
         TextImpl t = new TextImpl(this);
         texts.add(t);
@@ -50,8 +57,13 @@ public class ParagraphImpl implements Paragraph, XmlExportable {
 
     @Override
     public void export(XmlExporter exporter) {
-        exporter.beginElement("P")
-                .addIfaceAttribute("Id", paragraphStyle);
+        exporter.beginElement("P");
+
+        if (paragraphStyle != null) {
+            exporter.addIfaceAttribute("Id", paragraphStyle);
+        } else if (existingParagraphStyleId != null) {
+            exporter.addStringAttribute("Id", existingParagraphStyleId);
+        }
 
         for (TextImpl text : texts) {
             text.export(exporter);

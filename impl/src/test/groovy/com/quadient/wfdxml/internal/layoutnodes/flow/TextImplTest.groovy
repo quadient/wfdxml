@@ -384,4 +384,33 @@ class TextImplTest extends Specification {
                </T>""")
 
     }
+
+    def "export Text with ExistingTextStyle"() {
+        given:
+        TextImpl text = new TextImpl()
+
+        text.setExistingTextStyle("TextStyles.Existing Text Style")
+
+        when:
+        text.export(exporter)
+
+        then:
+        assertXmlEqualsWrapRoot(exporter.buildString(),
+                """<T xml:space="preserve" Id="TextStyles.Existing Text Style"></T>""")
+    }
+
+    def "exporting Text with both TextStyle and ExistingTextStyle prefers TextStyle"() {
+        given:
+        TextImpl text = new TextImpl()
+
+        text.setTextStyle(new TextStyleImpl())
+        text.setExistingTextStyle("TextStyles.Existing Text Style")
+
+        when:
+        text.export(exporter)
+
+        then:
+        assertXmlEqualsWrapRoot(exporter.buildString(),
+                """<T xml:space="preserve" Id="SR_1"></T>""")
+    }
 }

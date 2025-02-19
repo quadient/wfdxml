@@ -68,7 +68,8 @@ public class XmlExporter {
     public XmlExporter addElementWithIface(String elementName, Node obj) {
         builder.e(elementName);
         if (obj != null) {
-            builder.text(objectToId(obj));
+            String id = obj.getId() == null ? objectToId(obj) : obj.getId();
+            builder.text(id);
         }
         builder.up();
         return this;

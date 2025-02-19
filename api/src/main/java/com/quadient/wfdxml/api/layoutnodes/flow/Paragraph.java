@@ -6,6 +6,8 @@ import com.quadient.wfdxml.api.layoutnodes.ParagraphStyle;
 public interface Paragraph {
     Paragraph setParagraphStyle(ParagraphStyle paragraphStyle);
 
+    Paragraph setExistingParagraphStyle(String id);
+
     Text addText();
 
     Flow back();

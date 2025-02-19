@@ -128,11 +128,11 @@ class LayoutImplTest extends Specification {
         assertXmlFileEquals("com/quadient/wfdxml/workflow/SimpleDeltaLayout.xml", exporter.buildString())
     }
 
-    def "nodes with custom id use it instead of generated id and are omitted from forward reference export"() {
+    def "node with Def.MainFlow id use it instead of generated id and is omitted from forward reference export"() {
         given:
         Layout layout = new LayoutImpl()
         layout.addFlow().setName("flowWithGeneratedId1").setType(Flow.Type.SIMPLE)
-        layout.addFlow().setName("flowWithCustomId").setType(Flow.Type.SIMPLE).setId("CustomId")
+        layout.addFlow().setName("MainFlow").setType(Flow.Type.SIMPLE).setId("Def.MainFlow")
         layout.addFlow().setName("flowWithGeneratedId2").setType(Flow.Type.SIMPLE)
 
         when:

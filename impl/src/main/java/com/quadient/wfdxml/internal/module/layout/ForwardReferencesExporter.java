@@ -6,6 +6,7 @@ import com.quadient.wfdxml.internal.Tree;
 import com.quadient.wfdxml.internal.xml.export.XmlExporter;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -39,13 +40,23 @@ public class ForwardReferencesExporter {
     private void exportTree(Tree tree) {
         for (Object c : tree.children) {
             NodeImpl child = (NodeImpl) c;
-            if (!rootDefNodes.contains(child) && child.getId() == null) {
+            if (!rootDefNodes.contains(child) && !isWithoutForwardReference(child)) {
                 writeForwardReferenceToExporter(child, tree);
             }
             if (child instanceof Tree) {
                 exportTree((Tree) child);
             }
         }
+    }
+
+    private final List<String> idsToSkip = List.of("Def.MainFlow");
+
+    private boolean isWithoutForwardReference(NodeImpl node) {
+        if (node.getId() == null) {
+            return false;
+        }
+
+        return idsToSkip.contains(node.getId());
     }
 
     private void writeForwardReferenceToExporter(NodeImpl node, Tree parent) {

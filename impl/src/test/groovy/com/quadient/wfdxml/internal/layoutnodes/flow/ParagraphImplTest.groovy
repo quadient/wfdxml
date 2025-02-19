@@ -72,4 +72,31 @@ class ParagraphImplTest extends Specification {
                    <T Id="SR_2" xml:space="preserve"/>
                 </P>""")
     }
+
+    def "export Paragraph with ExistingParagraphStyle"() {
+        given:
+        ParagraphImpl paragraph = new ParagraphImpl()
+
+        paragraph.setExistingParagraphStyle("ParagraphStyles.Existing Para Style")
+
+        when:
+        paragraph.export(exporter)
+
+        then:
+        assertXmlEqualsWrapRoot(exporter.buildString(), """<P Id="ParagraphStyles.Existing Para Style"></P>""")
+    }
+
+    def "exporting Paragraph with both ParagraphStyle and ExistingParagraphStyle prefers ParagraphStyle"() {
+        given:
+        ParagraphImpl paragraph = new ParagraphImpl()
+
+        paragraph.setParagraphStyle(new ParagraphStyleImpl())
+        paragraph.setExistingParagraphStyle("ParagraphStyles.Existing Para Style")
+
+        when:
+        paragraph.export(exporter)
+
+        then:
+        assertXmlEqualsWrapRoot(exporter.buildString(), """<P Id="SR_1"></P>""")
+    }
 }

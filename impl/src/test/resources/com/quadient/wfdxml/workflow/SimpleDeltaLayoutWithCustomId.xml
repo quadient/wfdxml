@@ -18,7 +18,7 @@
         <SectionFlow>False</SectionFlow>
     </Flow>
     <Flow>
-        <Id>CustomId</Id>
+        <Id>Def.MainFlow</Id>
         <Type>Simple</Type>
         <FlowContent Width="0.2"/>
         <SectionFlow>False</SectionFlow>
