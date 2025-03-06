@@ -4,6 +4,8 @@ import com.quadient.wfdxml.api.Node
 import com.quadient.wfdxml.api.layoutnodes.FillStyle
 import com.quadient.wfdxml.api.layoutnodes.Flow
 import com.quadient.wfdxml.api.layoutnodes.TextStyle
+import com.quadient.wfdxml.api.layoutnodes.data.DataType
+import com.quadient.wfdxml.api.layoutnodes.data.VariableKind
 import com.quadient.wfdxml.api.layoutnodes.tables.Cell
 import com.quadient.wfdxml.api.layoutnodes.tables.RowSet
 import com.quadient.wfdxml.api.layoutnodes.tables.Table
@@ -140,5 +142,19 @@ class LayoutImplTest extends Specification {
 
         then:
         assertXmlFileEquals("com/quadient/wfdxml/workflow/SimpleDeltaLayoutWithCustomId.xml", exporter.buildString())
+    }
+
+    def "variable with existing parent id uses in its forward reference export"() {
+        given:
+        Layout layout = new LayoutImpl()
+        layout.data.addVariable().setName("MyVar").setDataType(DataType.INT).setKind(VariableKind.DISCONNECTED).setExistingParentId("Data.Clients.Value")
+
+        when:
+        layout.exportLayoutDelta(exporter)
+        String result = exporter.buildString()
+
+        then:
+        assert result.contains("<Variable><Id>SR_1</Id><Name>MyVar</Name><ParentId>Data.Clients.Value</ParentId><Forward></Forward></Variable>")
+        assert result.contains("<Variable><Id>SR_1</Id><Type>Disconnected</Type><VarType>Int</VarType><Content>0</Content></Variable>")
     }
 }

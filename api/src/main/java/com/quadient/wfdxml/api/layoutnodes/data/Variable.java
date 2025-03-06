@@ -25,6 +25,12 @@ public interface Variable extends Node<Variable> {
 
     Variable setConversion(ConversionType conversion);
 
+    String getExistingParentId();
+
+    Variable setExistingParentId(String existingParentId);
+
+    Variable setDisplacement(Displacement displacement);
+
     enum ConversionType {
         SCRIPT,
         ARABIC_TO_ROMAN_NUMBER,

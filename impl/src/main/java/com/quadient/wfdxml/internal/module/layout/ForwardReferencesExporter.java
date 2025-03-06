@@ -1,5 +1,6 @@
 package com.quadient.wfdxml.internal.module.layout;
 
+import com.quadient.wfdxml.api.layoutnodes.data.Variable;
 import com.quadient.wfdxml.internal.DefaultNodeType;
 import com.quadient.wfdxml.internal.NodeImpl;
 import com.quadient.wfdxml.internal.Tree;
@@ -63,10 +64,14 @@ public class ForwardReferencesExporter {
         exporter.beginElement(node.getXmlElementName())
                 .addElementWithIface("Id", node)
                 .addElementWithStringData("Name", node.getName())
-                .addElementWithStringData("Comment", node.getComment())
-                .addElementWithIface("ParentId", parent)
-                .addElement("Forward");
+                .addElementWithStringData("Comment", node.getComment());
 
-        exporter.endElement();
+        if (node instanceof Variable variable && variable.getExistingParentId() != null) {
+            exporter.addElementWithStringData("ParentId", variable.getExistingParentId());
+        } else {
+            exporter.addElementWithIface("ParentId", parent);
+        }
+
+        exporter.addElement("Forward").endElement();
     }
 }

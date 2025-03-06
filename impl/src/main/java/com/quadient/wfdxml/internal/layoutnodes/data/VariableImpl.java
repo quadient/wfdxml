@@ -2,6 +2,7 @@ package com.quadient.wfdxml.internal.layoutnodes.data;
 
 import com.quadient.wfdxml.api.layoutnodes.FlowArea;
 import com.quadient.wfdxml.api.layoutnodes.data.DataType;
+import com.quadient.wfdxml.api.layoutnodes.data.Displacement;
 import com.quadient.wfdxml.api.layoutnodes.data.Variable;
 import com.quadient.wfdxml.api.layoutnodes.data.VariableKind;
 import com.quadient.wfdxml.internal.Tree;
@@ -29,6 +30,7 @@ public class VariableImpl extends Tree<Variable> implements Variable {
     private VariableType type = DATA_VARIABLE;
     private NodeOptionality nodeOptionality = MUST_EXIST;
     private NodeType nodeType = STRING;
+    private Displacement displacement = null;
 
     private FlowAreaImpl flowArea;
 
@@ -39,6 +41,8 @@ public class VariableImpl extends Tree<Variable> implements Variable {
     private long constantInt64;
     private String expression = "";
     private ConversionType fcvClassName;
+
+    private String existingParentId = null;
 
     public static String convertVariableTypeToXmlName(VariableType type) {
         switch (type) {
@@ -328,6 +332,23 @@ public class VariableImpl extends Tree<Variable> implements Variable {
     }
 
     @Override
+    public String getExistingParentId() {
+        return existingParentId;
+    }
+
+    @Override
+    public Variable setExistingParentId(String existingParentId) {
+        this.existingParentId = existingParentId;
+        return this;
+    }
+
+    @Override
+    public Variable setDisplacement(Displacement displacement) {
+        this.displacement = displacement;
+        return this;
+    }
+
+    @Override
     public String getXmlElementName() {
         return "Variable";
     }
@@ -395,5 +416,17 @@ public class VariableImpl extends Tree<Variable> implements Variable {
                     .addElementWithStringData("Script", expression)
                     .endElement();
         }
+
+        if (displacement != null) {
+            exporter.addElementWithStringData("Displacement", getDisplacementValue(displacement));
+        }
+    }
+
+    private String getDisplacementValue(Displacement displacement) {
+        return switch (displacement) {
+            case LOCAL -> "Local";
+            case REQUIRED -> "Required";
+            case OPTIONAL -> "Optional";
+        };
     }
 }

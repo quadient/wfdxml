@@ -35,6 +35,7 @@ import com.quadient.wfdxml.internal.xml.export.XmlExporter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static com.quadient.wfdxml.internal.DefaultNodeType.DN_ANCHORS_GROUP;
 import static com.quadient.wfdxml.internal.DefaultNodeType.DN_BLACK_FIll;
@@ -70,7 +71,7 @@ public class LayoutImpl extends WorkFlowModuleImpl<Layout> implements Layout {
     private DataImpl data;
     private PagesImpl pages;
 
-    private final List<String> layoutDeltaAllowedGroups = List.of("Flows", "Tables", "RowSets", "Cells");
+    private final List<String> layoutDeltaAllowedGroups = List.of("Flows", "Tables", "RowSets", "Cells", "Data");
 
     public LayoutImpl() {
         initializeDefaultNodes();
@@ -328,7 +329,17 @@ public class LayoutImpl extends WorkFlowModuleImpl<Layout> implements Layout {
 
         exporter.beginElement("Layout");
 
-        children = children.stream().filter(child -> layoutDeltaAllowedGroups.contains(child.getName())).toList();
+        children = children.stream()
+                .filter(child -> layoutDeltaAllowedGroups.contains(child.getName()))
+                .map(child -> {
+                    if (child.getName().equals("Data") && child instanceof Tree<?> dataNode) {
+                        dataNode.children = dataNode.children.stream()
+                                .filter(dataChild -> !dataChild.getName().equals("SystemVariable"))
+                                .toList();
+                        return dataNode;
+                    }
+                    return child;
+                }).collect(Collectors.toList());
 
         new ForwardReferencesExporter(this, defNodes, exporter).exportForwardReferences();
         exportNodes(exporter);

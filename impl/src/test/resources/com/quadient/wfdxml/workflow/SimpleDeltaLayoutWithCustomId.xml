@@ -29,4 +29,7 @@
         <FlowContent Width="0.2"/>
         <SectionFlow>False</SectionFlow>
     </Flow>
+    <Data>
+        <Id>Def.Data</Id>
+    </Data>
 </Layout>

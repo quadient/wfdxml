@@ -2,6 +2,7 @@ package com.quadient.wfdxml.internal.layoutnodes.data
 
 import com.quadient.wfdxml.api.layoutnodes.FlowArea
 import com.quadient.wfdxml.api.layoutnodes.data.DataType
+import com.quadient.wfdxml.api.layoutnodes.data.Displacement
 import com.quadient.wfdxml.api.layoutnodes.data.VariableKind
 import com.quadient.wfdxml.internal.layoutnodes.FlowAreaImpl
 import com.quadient.wfdxml.internal.xml.export.XmlExporter
@@ -411,5 +412,21 @@ class VariableImplTest extends Specification {
                            <Script>Script</Script>
                        </FCVProps>
         """)
+    }
+
+    def "export Variable with displacement"() {
+        given:
+        VariableImpl variable = new VariableImpl().setDisplacement(Displacement.REQUIRED)
+
+        when:
+        variable.export(exporter)
+
+        then:
+        AssertXml.assertXmlEqualsWrapRoot(exporter.buildString(), """
+                        <Type>DataVariable</Type>
+                        <VarType>String</VarType>
+                        <InsideFnc>0</InsideFnc>
+                        <Displacement>Required</Displacement>
+                        """)
     }
 }
