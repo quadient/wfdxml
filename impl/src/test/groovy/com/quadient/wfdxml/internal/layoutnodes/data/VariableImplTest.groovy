@@ -10,6 +10,7 @@ import com.quadient.wfdxml.utils.AssertXml
 import spock.lang.Specification
 
 import static com.quadient.wfdxml.api.layoutnodes.data.DataType.BOOL
+import static com.quadient.wfdxml.api.layoutnodes.data.DataType.DATE_TIME
 import static com.quadient.wfdxml.api.layoutnodes.data.DataType.INT
 import static com.quadient.wfdxml.api.layoutnodes.data.DataType.INT64
 import static com.quadient.wfdxml.api.layoutnodes.data.Variable.ConversionType
@@ -416,7 +417,7 @@ class VariableImplTest extends Specification {
 
     def "export Variable with displacement"() {
         given:
-        VariableImpl variable = new VariableImpl().setDisplacement(Displacement.REQUIRED)
+        VariableImpl variable = new VariableImpl().setDisplacement(Displacement.REQUIRED) as VariableImpl
 
         when:
         variable.export(exporter)
@@ -427,6 +428,21 @@ class VariableImplTest extends Specification {
                         <VarType>String</VarType>
                         <InsideFnc>0</InsideFnc>
                         <Displacement>Required</Displacement>
+                        """)
+    }
+
+    def "export datetime disconnected variable with default value"() {
+        given:
+        VariableImpl variable = new VariableImpl().setKind(DISCONNECTED).setDataType(DATE_TIME).setValue("2014-07-15") as VariableImpl
+
+        when:
+        variable.export(exporter)
+
+        then:
+        AssertXml.assertXmlEqualsWrapRoot(exporter.buildString(), """
+                        <Type>Disconnected</Type>
+                        <VarType>DateTime</VarType>
+                        <Content>2014-07-15</Content>
                         """)
     }
 }

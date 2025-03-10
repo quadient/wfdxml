@@ -371,6 +371,7 @@ public class VariableImpl extends Tree<Variable> implements Variable {
             if (type != DATA_VARIABLE) {
                 switch (nodeType) {
                     case STRING:
+                    case DATETIME:
                         exporter.addElementWithStringData("Content", constantText);
                         break;
                     case INT64:
