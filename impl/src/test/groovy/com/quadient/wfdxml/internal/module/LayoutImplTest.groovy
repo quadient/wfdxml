@@ -154,7 +154,7 @@ class LayoutImplTest extends Specification {
         String result = exporter.buildString()
 
         then:
-        assert result.contains("<Variable><Id>SR_1</Id><Name>MyVar</Name><ParentId>Data.Clients.Value</ParentId><Forward></Forward></Variable>")
+        assert result.contains("<Variable><Id>SR_1</Id><Name>MyVar</Name><ParentId>Data.Clients.Value</ParentId><Forward useExisting=\"True\"></Forward></Variable>")
         assert result.contains("<Variable><Id>SR_1</Id><Type>Disconnected</Type><VarType>Int</VarType><Content>0</Content></Variable>")
     }
 }

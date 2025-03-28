@@ -35,17 +35,21 @@ public class ForwardReferencesExporter {
     }
 
     public void exportForwardReferences() {
-        exportTree(layout);
+        exportTree(layout, false);
     }
 
-    private void exportTree(Tree tree) {
+    public void exportForwardReferences(Boolean useExistingVariables) {
+        exportTree(layout, useExistingVariables);
+    }
+
+    private void exportTree(Tree tree, Boolean useExistingVariables) {
         for (Object c : tree.children) {
             NodeImpl child = (NodeImpl) c;
             if (!rootDefNodes.contains(child) && !isWithoutForwardReference(child)) {
-                writeForwardReferenceToExporter(child, tree);
+                writeForwardReferenceToExporter(child, tree, useExistingVariables);
             }
             if (child instanceof Tree) {
-                exportTree((Tree) child);
+                exportTree((Tree) child, useExistingVariables);
             }
         }
     }
@@ -60,11 +64,8 @@ public class ForwardReferencesExporter {
         return idsToSkip.contains(node.getId());
     }
 
-    private void writeForwardReferenceToExporter(NodeImpl node, Tree parent) {
-        exporter.beginElement(node.getXmlElementName())
-                .addElementWithIface("Id", node)
-                .addElementWithStringData("Name", node.getName())
-                .addElementWithStringData("Comment", node.getComment());
+    private void writeForwardReferenceToExporter(NodeImpl node, Tree parent, Boolean useExistingVariables) {
+        exporter.beginElement(node.getXmlElementName()).addElementWithIface("Id", node).addElementWithStringData("Name", node.getName()).addElementWithStringData("Comment", node.getComment());
 
         if (node instanceof Variable variable && variable.getExistingParentId() != null) {
             exporter.addElementWithStringData("ParentId", variable.getExistingParentId());
@@ -72,6 +73,12 @@ public class ForwardReferencesExporter {
             exporter.addElementWithIface("ParentId", parent);
         }
 
-        exporter.addElement("Forward").endElement();
+        var forwardElement = exporter.beginElement("Forward");
+        if (node instanceof Variable && useExistingVariables) {
+            forwardElement.addBoolAttribute("useExisting", true);
+        }
+        forwardElement.endElement();
+
+        exporter.endElement();
     }
 }
