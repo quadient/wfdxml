@@ -6,6 +6,8 @@ public interface Image extends Node<Image> {
 
     Image setImageDiskLocation(String location);
 
+    Image setImageLocation(String location, LocationType locationType);
+
     Image setDpiXAndDpiY(double dpiX, double dpiY);
 
     Image setResizeWidthAndHeight(double width, double height);

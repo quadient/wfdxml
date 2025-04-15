@@ -1,6 +1,7 @@
 package com.quadient.wfdxml.internal.layoutnodes
 
 import com.quadient.wfdxml.api.layoutnodes.Image
+import com.quadient.wfdxml.api.layoutnodes.LocationType
 import com.quadient.wfdxml.internal.xml.export.XmlExporter
 import spock.lang.Specification
 
@@ -64,6 +65,31 @@ class ImageImplTest extends Specification {
                   <UseDifferentImageSizeForHtml>True</UseDifferentImageSizeForHtml>
                   <HtmlImageWidthValue>500px</HtmlImageWidthValue>
                   <HtmlImageHeightValue>600px</HtmlImageHeightValue>           
+                  """)
+    }
+
+    def "export image with ICM location"() {
+        given:
+        ImageImpl image = new ImageImpl().setImageLocation("vcs://Interactive/StandardPackage/Resources/Images/frog.png", LocationType.ICM)
+
+        when:
+        image.export(exporter)
+
+        then:
+        assertXmlEqualsWrapRoot(exporter.buildString(), """
+                  <ImageType>Simple</ImageType>
+                  <ImageLocation>VCSLocation,vcs://Interactive/StandardPackage/Resources/Images/frog.png</ImageLocation>
+                  <ImageDPIX>0.0</ImageDPIX>
+                  <ImageDPIY>0.0</ImageDPIY>
+                  <UseResizeWidth>False</UseResizeWidth>
+                  <ResizeImageWidth>0.0</ResizeImageWidth>
+                  <UseResizeHeight>False</UseResizeHeight>
+                  <ResizeImageHeight>0.0</ResizeImageHeight>
+                  <MakeTransparent>False</MakeTransparent>
+                  <TransparencyR X="255" Y="255"></TransparencyR>
+                  <TransparencyG X="255" Y="255"></TransparencyG>
+                  <TransparencyB X="255" Y="255"></TransparencyB>
+                  <UseDifferentImageSizeForHtml>False</UseDifferentImageSizeForHtml>   
                   """)
     }
 }

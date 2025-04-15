@@ -1,6 +1,7 @@
 package com.quadient.wfdxml.internal.layoutnodes;
 
 import com.quadient.wfdxml.api.layoutnodes.Image;
+import com.quadient.wfdxml.api.layoutnodes.LocationType;
 import com.quadient.wfdxml.internal.NodeImpl;
 import com.quadient.wfdxml.internal.xml.export.XmlExporter;
 
@@ -186,7 +187,13 @@ public class ImageImpl extends NodeImpl<Image> implements Image {
 
     @Override
     public ImageImpl setImageDiskLocation(String imageLocation) {
-        this.imageLocation = "DiskLocation," + imageLocation;
+        this.imageLocation = LocationType.DISK.getXmlValue() + "," + imageLocation;
+        return this;
+    }
+
+    @Override
+    public ImageImpl setImageLocation(String imageLocation, LocationType locationType) {
+        this.imageLocation = locationType.getXmlValue() + "," + imageLocation;
         return this;
     }
 

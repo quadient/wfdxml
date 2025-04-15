@@ -3,6 +3,7 @@ package com.quadient.wfdxml.internal.module
 import com.quadient.wfdxml.api.Node
 import com.quadient.wfdxml.api.layoutnodes.FillStyle
 import com.quadient.wfdxml.api.layoutnodes.Flow
+import com.quadient.wfdxml.api.layoutnodes.LocationType
 import com.quadient.wfdxml.api.layoutnodes.TextStyle
 import com.quadient.wfdxml.api.layoutnodes.data.DataType
 import com.quadient.wfdxml.api.layoutnodes.data.VariableKind
@@ -128,6 +129,19 @@ class LayoutImplTest extends Specification {
 
         then:
         assertXmlFileEquals("com/quadient/wfdxml/workflow/SimpleDeltaLayout.xml", exporter.buildString())
+    }
+
+    def "exportLayoutDelta exports image with ICM location and flow containing it"() {
+        given:
+        Layout layout = new LayoutImpl()
+        def image = layout.addImage().setImageLocation("icm://testImage.jpg", LocationType.ICM)
+        layout.addFlow().setName("ImageFlow").addParagraph().addText().appendImage(image)
+
+        when:
+        layout.exportLayoutDelta(exporter)
+
+        then:
+        assertXmlFileEquals("com/quadient/wfdxml/workflow/SimpleDeltaLayoutWithImage.xml", exporter.buildString())
     }
 
     def "node with Def.MainFlow id use it instead of generated id and is omitted from forward reference export"() {
