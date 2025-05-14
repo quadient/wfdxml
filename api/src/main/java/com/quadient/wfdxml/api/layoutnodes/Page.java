@@ -24,5 +24,9 @@ public interface Page extends Node<Page> {
 
     Page setDefaultPage(Page defaultPage);
 
+    Page setWidth(double width);
+
+    Page setHeight(double height);
+
     BarcodeFactory getBarcodeFactory();
 }

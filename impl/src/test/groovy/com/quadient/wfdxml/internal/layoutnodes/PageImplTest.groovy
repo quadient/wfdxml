@@ -34,6 +34,9 @@ class PageImplTest extends Specification {
         given:
         Page page = new PageImpl(null) as Page
 
+        page.setWidth(0.25)
+        page.setHeight(0.3)
+
         VariableImpl var1 = new VariableImpl()
         VariableImpl var2 = new VariableImpl()
         PageImpl condPage1 = new PageImpl(null)
@@ -57,6 +60,8 @@ class PageImplTest extends Specification {
 
         then:
         assertXmlEqualsWrapRoot(exporter.buildString(), """
+            <Width>0.25</Width>
+            <Height>0.3</Height>
             <ConditionType>Condition</ConditionType>
             <DefaultPageId>$defaultPageId</DefaultPageId>
             <DefaultRollback>3</DefaultRollback>

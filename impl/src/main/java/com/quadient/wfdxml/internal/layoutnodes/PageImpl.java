@@ -29,6 +29,8 @@ public class PageImpl extends Tree<Page> implements Page {
     private final List<List<PageCondition>> pageConditions = asList(null, null, null);
     private final boolean[] treatDefaultAsError = new boolean[3];
     private final LayoutImpl layout;
+    private double width = 0.210;
+    private double height = 0.297;
 
     public PageImpl(LayoutImpl layout) {
         this.layout = layout;
@@ -104,6 +106,18 @@ public class PageImpl extends Tree<Page> implements Page {
     }
 
     @Override
+    public Page setWidth(double width) {
+        this.width = width;
+        return this;
+    }
+
+    @Override
+    public Page setHeight(double height) {
+        this.height = height;
+        return this;
+    }
+
+    @Override
     public BarcodeFactoryImpl getBarcodeFactory() {
         return new BarcodeFactoryImpl(children, layout.getDefTextStyle());
     }
@@ -115,6 +129,7 @@ public class PageImpl extends Tree<Page> implements Page {
 
     @Override
     public void export(XmlExporter exporter) {
+        exporter.addElementWithDoubleData("Width", width).addElementWithDoubleData("Height", height);
         exportPageProperties(exporter, NEXT_PAGE);
         exportPageProperties(exporter, START_REPETITION);
         exportPageProperties(exporter, CONTINUE_AFTER_REPETITION);
