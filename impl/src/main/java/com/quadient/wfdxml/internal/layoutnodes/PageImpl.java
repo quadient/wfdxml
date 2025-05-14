@@ -29,8 +29,8 @@ public class PageImpl extends Tree<Page> implements Page {
     private final List<List<PageCondition>> pageConditions = asList(null, null, null);
     private final boolean[] treatDefaultAsError = new boolean[3];
     private final LayoutImpl layout;
-    private double width = 0.210;
-    private double height = 0.297;
+    private double width = 0;
+    private double height = 0;
 
     public PageImpl(LayoutImpl layout) {
         this.layout = layout;
@@ -129,7 +129,8 @@ public class PageImpl extends Tree<Page> implements Page {
 
     @Override
     public void export(XmlExporter exporter) {
-        exporter.addElementWithDoubleData("Width", width).addElementWithDoubleData("Height", height);
+        if (width != 0) exporter.addElementWithDoubleData("Width", width);
+        if (height != 0) exporter.addElementWithDoubleData("Height", height);
         exportPageProperties(exporter, NEXT_PAGE);
         exportPageProperties(exporter, START_REPETITION);
         exportPageProperties(exporter, CONTINUE_AFTER_REPETITION);
