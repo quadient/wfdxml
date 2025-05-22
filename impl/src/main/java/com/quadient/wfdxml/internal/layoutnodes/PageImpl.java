@@ -129,9 +129,9 @@ public class PageImpl extends Tree<Page> implements Page {
 
     @Override
     public void export(XmlExporter exporter) {
+        exportPageProperties(exporter, NEXT_PAGE);
         if (width != 0) exporter.addElementWithDoubleData("Width", width);
         if (height != 0) exporter.addElementWithDoubleData("Height", height);
-        exportPageProperties(exporter, NEXT_PAGE);
         exportPageProperties(exporter, START_REPETITION);
         exportPageProperties(exporter, CONTINUE_AFTER_REPETITION);
     }

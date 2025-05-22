@@ -57,11 +57,10 @@ class PageImplTest extends Specification {
 
         when:
         (page as PageImpl).export(exporter)
+        String exportedString = exporter.buildString()
 
         then:
-        assertXmlEqualsWrapRoot(exporter.buildString(), """
-            <Width>0.25</Width>
-            <Height>0.3</Height>
+        assertXmlEqualsWrapRoot(exportedString, """
             <ConditionType>Condition</ConditionType>
             <DefaultPageId>$defaultPageId</DefaultPageId>
             <DefaultRollback>3</DefaultRollback>
@@ -76,6 +75,8 @@ class PageImplTest extends Specification {
               <PageId>$condPage2Id</PageId>
             </PageCondition>
             <TreatDefaultAsError>True</TreatDefaultAsError>
+            <Width>0.25</Width>
+            <Height>0.3</Height>
             <ConditionType>Simple</ConditionType>
             <NextPageId/>
             <ConditionType>Simple</ConditionType>
